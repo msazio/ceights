@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menuHelpButton"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" 
-    android:background="@drawable/backgroundimage" >
+    android:background="@drawable/backgroundimage"
+    android:orientation="vertical" >
+
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:gravity="center_vertical|fill_horizontal"
         android:text="Crazy Eights"
         android:textSize="90dp" />
 
@@ -18,7 +21,7 @@
         android:id="@+id/scrollView1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp" >
 
@@ -28,32 +31,34 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" 
             android:gravity="center_horizontal"   >
+
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/menuStartButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:onClick="startGame"
-                android:text="Start New Game" 
-                android:textSize="70dp"/>
+                android:text="Start New Game"
+                android:textSize="15dp" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/menuHelpButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:onClick="viewHelp"
-                android:text="Help" 
-                android:textSize="70dp"/>
+                android:text="Help"
+                android:textSize="15dp" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/menuExitButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:onClick="exit"
-                android:text="Exit" 
-                android:textSize="70dp"/>
+                android:text="Exit"
+                android:textSize="15dp" />
+
         </LinearLayout>
     </ScrollView>
 

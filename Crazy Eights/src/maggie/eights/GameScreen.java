@@ -81,7 +81,7 @@ public class GameScreen extends Activity implements View.OnClickListener{
         Vector rData  = (Vector)data;
         Vector player0 = (Vector)rData.elementAt(0);
         Vector player1 = (Vector)rData.elementAt(1);       
-        Vector discardList = (Vector)rData.elementAt(2);
+        Vector<Integer> discardList = (Vector<Integer>)rData.elementAt(2);
         
     	LinearLayout bottomCards = (LinearLayout)findViewById(R.id.bottomCards);
         LinearLayout middleCards = (LinearLayout)findViewById(R.id.middleCards);
@@ -89,7 +89,7 @@ public class GameScreen extends Activity implements View.OnClickListener{
                     
         generateDeck();
 
-        Vector removeCards = new Vector();
+        Vector<Card> removeCards = new Vector<Card>();
         Card tmpC;
 
         /*Setup human  player*/
@@ -161,7 +161,7 @@ public class GameScreen extends Activity implements View.OnClickListener{
         topCards.removeAllViews();
 		
 		
-		Vector everything = new Vector();
+		Vector<Vector<Integer>> everything = new Vector<Vector<Integer>>();
 		
 		Vector<Integer> cardList0 = new Vector<Integer>();
         Vector<Integer> cardList1 = new Vector<Integer>();
@@ -935,7 +935,7 @@ public class GameScreen extends Activity implements View.OnClickListener{
             }
             
             /*If the field is helpButton, view help*/
-            else if(view == findViewById(R.id.helpButton)){
+            else if(view == findViewById(R.id.menuHelpButton)){
             	wholeLayout.invalidate();
             	startActivity(new Intent("HELP"));
             	return;

@@ -115,7 +115,7 @@
 	                    android:textSize="40dp" />
 
 	                <Button
-	                    android:id="@+id/helpButton"
+	                    android:id="@+id/menuHelpButton"
 	                    android:layout_width="wrap_content"
 	                    android:layout_height="wrap_content"
 	                    android:layout_gravity="right"

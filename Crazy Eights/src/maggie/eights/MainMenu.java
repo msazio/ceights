@@ -4,7 +4,10 @@ package maggie.eights;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
 
 public class MainMenu extends Activity{
 	
@@ -13,6 +16,12 @@ public class MainMenu extends Activity{
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.main);
+
+        Display d = this.getWindowManager().getDefaultDisplay();
+        d.getHeight();
+        
+        TextView menu1 = (TextView)findViewById(R.id.menuStartButton);
+        menu1.setTextSize(25);
 	}
 	
 	/**
