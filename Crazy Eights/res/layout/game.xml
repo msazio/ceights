@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tableTop"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/backgroundimage">
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView2"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerHorizontal="true">
+
+    <TableLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" >
+	
+        <HorizontalScrollView
+	        android:id="@+id/scrollViewAI"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true" >
+		    <LinearLayout
+		        android:id="@+id/topCards"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content" 
+		        android:layout_marginTop="20dp">
+		    </LinearLayout>
+	    </HorizontalScrollView>
+
+	
+	    <TableLayout
+	        android:id="@+id/middleCardsHolder"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" 
+	        android:layout_marginTop="20dp" 
+	        android:orientation="vertical">
+		    
+	        <TableRow
+	            android:id="@+id/middleRow"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content" >
+	        
+
+	        	<LinearLayout
+	        	    android:id="@+id/middleCards"
+	        		android:layout_width="wrap_content"
+			        android:layout_height="wrap_content" 
+			        android:layout_marginTop="20dp" >
+	        	    
+	        	</LinearLayout>
+	            
+	            <LinearLayout
+	                android:id="@+id/suitID"
+	       			android:layout_width="wrap_content"
+	        		android:layout_height="wrap_content" 
+	        		android:layout_marginTop="20dp" 
+	        		android:layout_marginLeft="20dp"
+	        		android:orientation="vertical">
+	                
+       				<ImageView
+			            android:id="@+id/suitImage"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"/>
+       				<TextView
+			            android:id="@+id/suitText"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:textSize="25dp"/>
+	                
+	            </LinearLayout>
+	            </TableRow>
+			
+	    </TableLayout>
+	    <HorizontalScrollView
+	        android:id="@+id/scrollView1"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/middleCards" 
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginTop="20dp">
+		    <LinearLayout
+		        android:id="@+id/bottomCards"
+		        android:layout_width="fill_parent"
+		        android:layout_height="wrap_content">
+		    </LinearLayout>
+	    </HorizontalScrollView>
+	    
+	   <TableLayout
+	            android:id="@+id/linearLayout1"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content" >
+
+	            <TableRow
+	                android:id="@+id/tableRowButtons"
+	                android:layout_width="fill_parent"
+	                android:layout_height="wrap_content" >
+
+	                <Button
+	                    android:id="@+id/sortButton"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_gravity="left"
+	                    android:onClick="onClick"
+	                    android:text="Sort Cards"
+	                    android:textSize="40dp" />
+
+	                <Button
+	                    android:id="@+id/passButton"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_gravity="center_horizontal"
+	                    android:onClick="onClick"
+	                    android:text="Pass"
+	                    android:textSize="40dp" />
+
+	                <Button
+	                    android:id="@+id/helpButton"
+	                    android:layout_width="wrap_content"
+	                    android:layout_height="wrap_content"
+	                    android:layout_gravity="right"
+	                    android:onClick="onClick"
+	                    android:text="Help"
+	                    android:textSize="40dp" />
+	            </TableRow>
+
+	</TableLayout>
+</TableLayout>
+</ScrollView>
+</RelativeLayout>
