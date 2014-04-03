@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Display;
@@ -49,8 +50,6 @@ public class GameScreen extends Activity implements View.OnClickListener{
     ImageView img;
     int currentICount;
 	char newSuit;
-	DealBListener dealBListener;
-	DealTListener dealTListener;
     
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,22 +76,26 @@ public class GameScreen extends Activity implements View.OnClickListener{
         WindowManager w = this.getWindowManager();
         Display d = w.getDefaultDisplay();
         
+        Point size = new Point();
+        d.getSize(size);
+
+        
         /*Create suit images and resize them*/
         Bitmap spadetmp = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier("spade", "drawable", "maggie.eights"));
-        spadeI = Bitmap.createScaledBitmap(spadetmp, d.getWidth()/12, d.getWidth()/11, true);
+        spadeI = Bitmap.createScaledBitmap(spadetmp, size.x/12, size.x/11, true);
         Bitmap hearttmp = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier("heart", "drawable", "maggie.eights"));
-        heartI = Bitmap.createScaledBitmap(hearttmp, d.getWidth()/12, d.getWidth()/11, true);
+        heartI = Bitmap.createScaledBitmap(hearttmp, size.x/12, size.x/11, true);
         Bitmap diamondtmp = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier("diamond", "drawable", "maggie.eights"));
-        diamondI = Bitmap.createScaledBitmap(diamondtmp, d.getWidth()/12, d.getWidth()/11, true);
+        diamondI = Bitmap.createScaledBitmap(diamondtmp, size.x/12, size.x/11, true);
         Bitmap clubtmp = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier("club", "drawable", "maggie.eights"));
-        clubI = Bitmap.createScaledBitmap(clubtmp, d.getWidth()/12, d.getWidth()/11, true);
+        clubI = Bitmap.createScaledBitmap(clubtmp, size.x/12, size.x/11, true);
     	
         
         /*create the image used as the card backs and scale it to the correct size*/
         int backID = getResources().getIdentifier("bback", "drawable", "maggie.eights");
         tmp = BitmapFactory.decodeResource(getResources(), backID);
         
-        cardB = Bitmap.createScaledBitmap(tmp, d.getWidth()/12, d.getWidth()/9, true);
+        cardB = Bitmap.createScaledBitmap(tmp, size.x/12, size.x/9, true);
        
         /*Create all 52 cards*/
         for(int j = 0; j < 4; j++){
@@ -104,7 +107,7 @@ public class GameScreen extends Activity implements View.OnClickListener{
                 int test2 = getResources().getIdentifier("" + currentSuit + currentValue, "drawable", "maggie.eights");
                 tmp = BitmapFactory.decodeResource(getResources(), test2);
                 
-                Bitmap cardTMP = Bitmap.createScaledBitmap(tmp, d.getWidth()/12, d.getWidth()/9, true);
+                Bitmap cardTMP = Bitmap.createScaledBitmap(tmp, size.x/12, size.x/9, true);
                                      
                 /*create a new card object using the face image, back image, suit and value
                  and add the card to the deck*/
@@ -186,12 +189,24 @@ public class GameScreen extends Activity implements View.OnClickListener{
      */
 	public void deal(){
         Card tmpC;
+        img = new ImageView(this);
         int ran;
         Random rand =  new Random();
         LinearLayout bottomCards = (LinearLayout)findViewById(R.id.bottomCards);
         LinearLayout topCards = (LinearLayout)findViewById(R.id.topCards);
         LinearLayout middleCards = (LinearLayout)findViewById(R.id.middleCards);
+        RelativeLayout rl = (RelativeLayout)findViewById(R.id.tableTop);
+        
+        int[] coords = new int[2];
+        top.getLocationInWindow(coords); //try using coords[0] instead of padding
+        int[] endCoords = new int[2];
+        
+        int xStart = top.getPaddingLeft(); 
+        int yStart = 250 - top.getPaddingTop() - top.getPaddingBottom();
+        int xEnd = top.getPaddingLeft();
 
+        DealerListener dealer = new DealerListener();
+        
         /* Deal cards into all hands until each player has cards equal to the max hand size*/
         for(int i = 0; i < handSize; i++){
             for(int j = 0; j < players.size(); j++){
@@ -203,8 +218,13 @@ public class GameScreen extends Activity implements View.OnClickListener{
                     tmpC.setEnabled(false);
                     tmpC.setFocusable(true);
                     tmpC.setOnClickListener(this);
+                    
+
                     tmpC.setVisibility(View.INVISIBLE);
                     bottomCards.addView(tmpC);
+                    
+
+                    
                 }
                 else{
                 	tmpC.flipCardDown();
@@ -212,7 +232,24 @@ public class GameScreen extends Activity implements View.OnClickListener{
                 	tmpC.setFocusable(false);
                 	tmpC.setVisibility(View.INVISIBLE);
                 	topCards.addView(tmpC);
-                }    
+                	
+
+                }
+                
+            	tmpC.getLocationInWindow(endCoords);
+                
+                /*Start animation*/
+                img.setImageBitmap(tmpC.currentImg);
+                img.setImageBitmap(top.getCurrentImage());
+            	img.setPadding(1, 1, 1, 1);
+                img.setVisibility(View.VISIBLE);
+                rl.addView(img);
+        		Animation deal = new TranslateAnimation(xStart, endCoords[0], yStart, endCoords[1]);
+        		dealer.chooseCardEnd(j, i);
+        		deal.setDuration(300);
+        		deal.setAnimationListener(dealer);
+        		img.startAnimation(deal);
+           
                 
                 ((Player)players.elementAt(j)).drawCard(tmpC);    
             }
@@ -230,7 +267,22 @@ public class GameScreen extends Activity implements View.OnClickListener{
         currentSuit = stackTop.suit;
         middleCards.addView(stackTop, 1); //display the stack top
         
-        dealAnimation(); //animate the dealing of cards
+
+        /*Start animation*/
+        img.setImageBitmap(stackTop.upCard);
+        img.setVisibility(View.VISIBLE);
+		Animation deal = new TranslateAnimation(xStart, (float) (stackTop.getLeft() + stackTop.getPaddingLeft()*1.5), yStart, yStart);
+		dealer.chooseCardEnd(2, 0);
+		deal.setDuration(300);
+		deal.setAnimationListener(dealer);
+		img.startAnimation(deal);
+        
+		for(int i=0; i<handSize; i++)
+        {
+        	(((Player)players.elementAt(0)).hand.elementAt(i)).setEnabled(true);
+        }
+		img.setImageBitmap(null);
+		setSuitImage();
 	}
 	
 	
@@ -876,166 +928,79 @@ public class GameScreen extends Activity implements View.OnClickListener{
         return;
     }
     
-    /**
-     * Animation
-     */
-    void dealAnimation()
-    {
-    	currentICount = 0;
+ 
+    
+    void dealAnimation2(){
+    	DealerListener dealerListener = new DealerListener();
     	img = new ImageView(this);
-    	RelativeLayout rl = (RelativeLayout)findViewById(R.id.tableTop);
     	int cardHeight = top.getCurrentImage().getHeight();
     	
-    	dealBListener = new DealBListener();
-    	dealTListener = new DealTListener();
-  	  
+    	/*Setup animation variables*/
+    	int[] coords = new int[2];
+		top.getLocationOnScreen(coords);
+		  
+		int xStart = top.getPaddingLeft(); int yStart = coords[1] - top.getPaddingTop() - top.getPaddingBottom();
+		int xEnd = top.getPaddingLeft();
+		int yEnd = (top.getPaddingTop() + top.getPaddingBottom() + cardHeight)*3;
+		 
+		
   	  	/*Deal to human*/
+    	RelativeLayout rl = (RelativeLayout)findViewById(R.id.tableTop);
     	img.setImageBitmap(top.getCurrentImage());
     	img.setPadding(1, 1, 1, 1);
     	rl.addView(img);
-
-  	  	/*Setup animation variables*/
-  	  	int xStart = top.getPaddingLeft(); 
-  	  	int xEnd = top.getPaddingLeft();
-  	  	int yStart = cardHeight*2 - 60 + top.getPaddingTop()*2;
-		int yEnd = (cardHeight + top.getPaddingBottom() + top.getPaddingTop())*3 - 60;
-		 
-		/*Start animation*/
-		Animation dealBottom = new TranslateAnimation(xStart, xEnd, yStart, yEnd);
-		dealBottom.setDuration(300);
-		dealBottom.setAnimationListener(dealBListener);
-		img.startAnimation(dealBottom);
-  	}
-
+	
+    	/*Start animation*/
+		Animation deal = new TranslateAnimation(xStart, xEnd, yStart, yEnd);
+		deal.setDuration(300);
+		deal.setRepeatCount(8);
+		deal.setAnimationListener(dealerListener);
+		img.startAnimation(deal);
+    }
+    
     /**
-     * Deal cards to human player
+     * One and only animation listener attempt
      */
-	class DealBListener implements AnimationListener{
-		/**
-		 * Add card to hand, start animation deal to other hand
-		 */
-		public void onAnimationEnd(Animation arg0) {
-			  RelativeLayout rl = (RelativeLayout)findViewById(R.id.tableTop);
-			  Card tmpC = (Card)((Player)players.elementAt(0)).hand.elementAt(currentICount);
-	    	  int cardHeight = top.getCurrentImage().getHeight();
-	    	  
-	    	  /*Setup human card*/
-			  rl.removeView(img);
-			  tmpC.setVisibility(View.VISIBLE);
-			  
-			  int xStart = tmpC.getPaddingLeft(); 
-	    	  int xEnd = tmpC.getPaddingLeft() + tmpC.getLeft();
-			  int yStart = cardHeight*2 - 60 + top.getPaddingTop()*2;
-			  int yEnd = top.getPaddingTop();
-			  
-			  /*Deal to AI*/
-			  img.setImageBitmap(top.getCurrentImage());
-			  img.setPadding(1, 1, 1, 1);
-			  rl.addView(img);
-			  
-			  /*Setup and start animation*/
-			  Animation dealTop = new TranslateAnimation(xStart, xEnd, yStart, yEnd);
-			  dealTop.setDuration(300);
-			  dealTop.setAnimationListener(dealTListener);
-			  img.startAnimation(dealTop);
-		}
-
-		public void onAnimationRepeat(Animation arg0) {
-		}
-
-		public void onAnimationStart(Animation arg0) {
-		}
-	}
-	
-	/**
-	 * Deal cards to the AI player
-	 *
-	 */
-	class DealTListener implements AnimationListener{
-		/**
-		 * Add card to hand, start deal animation to other hand
-		 */
-		public void onAnimationEnd(Animation animation) {			
-			RelativeLayout rl = (RelativeLayout)findViewById(R.id.tableTop);
-			int cardHeight = top.getCurrentImage().getHeight();
-    	  
-			/*Setup AI card*/
-			rl.removeView(img);
-			Card topC = (Card)((Player)players.elementAt(1)).hand.elementAt(currentICount);
-			topC.setVisibility(View.VISIBLE);
-			currentICount++;
-			
-			int yStart = cardHeight*2 - 60 + top.getPaddingTop()*2;
-			int yEnd = (cardHeight + top.getPaddingBottom() + top.getPaddingTop())*3 - 60;
-			
-			/*Start deal animation for human player's hand*/
-			if(currentICount != handSize)
-			{
-				/*Deal to human*/
-				Card tmpC = (Card)((Player)players.elementAt(0)).hand.elementAt(currentICount);
-				img.setImageBitmap(top.getCurrentImage());
-				img.setPadding(1, 1, 1, 1);
-				rl.addView(img);
-				int xStart = top.getPaddingLeft(); 
-		    	int xEnd = tmpC.getLeft() + top.getPaddingLeft();
-				  
-				Animation dealBottom = new TranslateAnimation(xStart, xEnd, yStart, yEnd);
-				dealBottom.setDuration(300);
-				dealBottom.setAnimationListener(dealBListener);
-				img.startAnimation(dealBottom);
-			}
-			/*Start deal animation for stack top*/
-			else
-			{
-				 Animation dealStack = new TranslateAnimation(top.getLeft(), (float) (stackTop.getLeft() + stackTop.getPaddingLeft()*1.5), yStart, yStart);
-				 dealStack.setAnimationListener(new DealSListener());
-				 dealStack.setDuration(500);
-				 
-				 img.setImageBitmap(top.getCurrentImage());
-				 rl.addView(img);
-				 
-				 img.startAnimation(dealStack);
-			}
-		}
-
-		public void onAnimationRepeat(Animation animation) {
-		}
+    class DealerListener implements AnimationListener{
+    	int pl = -1;
+    	int cc;
+    	RelativeLayout rl = (RelativeLayout)findViewById(R.id.tableTop);
+    	
+    	    	
+    	public void chooseCardEnd(int player, int cardCount)
+    	{
+    		pl=player;
+    		cc = cardCount;
+    	}
 
 		public void onAnimationStart(Animation animation) {
+			
 		}
-		
-	}
-	
-	/**
-	 * Animate dealing the top of the stack
-	 *
-	 */
-	class DealSListener implements AnimationListener{
-		/**
-		 * Animate card dealing to stack top
-		 */
+
 		public void onAnimationEnd(Animation animation) {
-			RelativeLayout rl = (RelativeLayout)findViewById(R.id.tableTop);
-			
-			rl.removeView(img);
-			stackTop.setVisibility(View.VISIBLE);
-			
-			for(int i=0; i<handSize; i++)
-	        {
-	        	(((Player)players.elementAt(0)).hand.elementAt(i)).setEnabled(true);
-	        }
-			img.setImageBitmap(null);
-			setSuitImage();
-			
+			rl.removeViewAt(rl.getChildCount()-1);
+			switch(pl){
+			//deal card to human
+			case(0): ((Card)((Player)players.elementAt(0)).hand.elementAt(cc)).setVisibility(View.VISIBLE);
+				break;
+			//deal card to AI
+			case(1):((Card)((Player)players.elementAt(1)).hand.elementAt(cc)).setVisibility(View.VISIBLE);
+				break;
+			//deal card to stack top
+			case(2): stackTop.setVisibility(View.VISIBLE);
+				break;
+			}
 		}
 
 		public void onAnimationRepeat(Animation animation) {
+			
 		}
+    	
+    }
 
-		public void onAnimationStart(Animation animation) {
-		}
-		
-	}
+ 
+	
+	/**
 
 	/**
 	 * finish the draw animation

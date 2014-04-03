@@ -5,11 +5,12 @@
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
         android:background="@drawable/backgroundimage">
-<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView  
     android:id="@+id/scrollView2"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
 
     <TableLayout 
 	    android:layout_width="fill_parent"
@@ -24,7 +25,8 @@
 		        android:id="@+id/topCards"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content" 
-		        android:layout_marginTop="20dp">
+		        android:layout_marginTop="20dp"
+		        android:orientation="horizontal">
 		    </LinearLayout>
 	    </HorizontalScrollView>
 
@@ -46,7 +48,8 @@
 	        	    android:id="@+id/middleCards"
 	        		android:layout_width="wrap_content"
 			        android:layout_height="wrap_content" 
-			        android:layout_marginTop="20dp" >
+			        android:layout_marginTop="20dp" 
+			        android:orientation="horizontal">
 	        	    
 	        	</LinearLayout>
 	            
@@ -82,7 +85,8 @@
 		    <LinearLayout
 		        android:id="@+id/bottomCards"
 		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content">
+		        android:layout_height="wrap_content"
+		        android:orientation="horizontal">
 		    </LinearLayout>
 	    </HorizontalScrollView>
 	    
